@@ -24,8 +24,7 @@ public class SettingsController : ControllerBase
 
         return Ok(new
         {
-            key = "ScoringRequiresBooking",
-            value = setting?.Value ?? "false"
+            scoringRequiresBooking = setting?.Value?.ToLower() == "true"
         });
     }
 
@@ -55,7 +54,7 @@ public class SettingsController : ControllerBase
 
         await _unitOfWork.SaveChangesAsync();
 
-        return Ok(new { key = "ScoringRequiresBooking", value = request.Value });
+        return Ok(new { scoringRequiresBooking = request.Value });
     }
 }
 
