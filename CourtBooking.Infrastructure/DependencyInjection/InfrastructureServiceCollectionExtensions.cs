@@ -1,8 +1,10 @@
 using CourtBooking.Application.Common.Interfaces;
+using CourtBooking.Application.Features.Scoring;
 using CourtBooking.Domain.Entities.Authentication;
 using CourtBooking.Infrastructure.Authentication;
 using CourtBooking.Infrastructure.Persistence;
 using CourtBooking.Infrastructure.Seeding;
+using CourtBooking.Infrastructure.Services.Scoring;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +36,8 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IScoringMatchService, ScoringMatchService>();
+        services.AddScoped<IScoringValidationService, ScoringValidationService>();
 
         return services;
     }
