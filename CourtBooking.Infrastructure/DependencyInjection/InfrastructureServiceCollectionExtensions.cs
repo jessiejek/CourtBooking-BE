@@ -33,6 +33,7 @@ public static class InfrastructureServiceCollectionExtensions
         .AddDefaultTokenProviders();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddHttpClient();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IAuthService, AuthService>();

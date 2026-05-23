@@ -28,6 +28,8 @@ builder.Configuration["JWT_AUDIENCE"] = Environment.GetEnvironmentVariable("JWT_
 builder.Configuration["JWT_ACCESS_TOKEN_MINUTES"] = Environment.GetEnvironmentVariable("JWT_ACCESS_TOKEN_MINUTES") ?? builder.Configuration["JWT_ACCESS_TOKEN_MINUTES"];
 builder.Configuration["JWT_REFRESH_TOKEN_DAYS"] = Environment.GetEnvironmentVariable("JWT_REFRESH_TOKEN_DAYS") ?? builder.Configuration["JWT_REFRESH_TOKEN_DAYS"];
 builder.Configuration["FRONTEND_URL"] = Environment.GetEnvironmentVariable("FRONTEND_URL") ?? builder.Configuration["FRONTEND_URL"];
+builder.Configuration["GOOGLE_CLIENT_ID"] = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") ?? builder.Configuration["GOOGLE_CLIENT_ID"];
+builder.Configuration["FACEBOOK_APP_ID"] = Environment.GetEnvironmentVariable("FACEBOOK_APP_ID") ?? builder.Configuration["FACEBOOK_APP_ID"];
 
 // Add services
 builder.Services.AddControllers();

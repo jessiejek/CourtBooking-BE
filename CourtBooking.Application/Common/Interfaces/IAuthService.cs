@@ -4,6 +4,7 @@ public interface IAuthService
 {
     Task<AuthResult> RegisterAsync(string fullName, string email, string password);
     Task<AuthResult> LoginAsync(string email, string password);
+    Task<AuthResult> SocialLoginAsync(SocialLoginRequestDto request);
     Task<AuthResult> RefreshTokenAsync(string refreshToken);
     Task LogoutAsync(string userId);
     Task<UserDto?> GetCurrentUserAsync(string userId);

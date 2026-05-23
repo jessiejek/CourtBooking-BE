@@ -34,6 +34,16 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("social-login")]
+    public async Task<IActionResult> SocialLogin([FromBody] SocialLoginRequestDto request)
+    {
+        var result = await _authService.SocialLoginAsync(request);
+        if (!result.Success)
+            return BadRequest(new { message = result.Error });
+
+        return Ok(result);
+    }
+
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
