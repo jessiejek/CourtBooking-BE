@@ -1,0 +1,200 @@
+### Phase 1-BE QA — Open Play Scoring
+
+@baseUrl = http://localhost:5000/api
+
+### 1. Register a test user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Player",
+  "email": "test@courtbooking.com",
+  "password": "Test@123"
+}
+
+### 2. Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@courtbooking.com",
+  "password": "Test@123"
+}
+
+### Save token from login response — use as: Bearer {{token}}
+
+### 3. Get sports (no auth needed)
+GET {{baseUrl}}/scoring/sports
+
+### 4. Get rule sets
+GET {{baseUrl}}/scoring/rule-sets?sportCode=PICKLEBALL
+
+### 5. Create Singles match
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OpenPlay",
+  "gameType": "Singles",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    {
+      "teamCode": "A",
+      "teamName": "Player A",
+      "players": [
+        { "registeredUserId": null, "playerName": "Jessie", "isGuest": true }
+      ]
+    },
+    {
+      "teamCode": "B",
+      "teamName": "Player B",
+      "players": [
+        { "registeredUserId": null, "playerName": "Opponent", "isGuest": true }
+      ]
+    }
+  ]
+}
+
+### 6. Create Doubles match
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OpenPlay",
+  "gameType": "Doubles",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    {
+      "teamCode": "A",
+      "teamName": "Team A",
+      "players": [
+        { "registeredUserId": null, "playerName": "Jessie", "isGuest": true },
+        { "registeredUserId": null, "playerName": "Partner", "isGuest": true }
+      ]
+    },
+    {
+      "teamCode": "B",
+      "teamName": "Team B",
+      "players": [
+        { "registeredUserId": null, "playerName": "Opponent 1", "isGuest": true },
+        { "registeredUserId": null, "playerName": "Opponent 2", "isGuest": true }
+      ]
+    }
+  ]
+}
+
+### 7. Get match by id (replace {id} with actual)
+GET {{baseUrl}}/scoring/matches/{id}
+Authorization: Bearer {{token}}
+
+### 8. My history
+GET {{baseUrl}}/scoring/matches/my-history
+Authorization: Bearer {{token}}
+
+### 9. Search players
+GET {{baseUrl}}/scoring/players/search?query=test
+Authorization: Bearer {{token}}
+
+### 10. Invalid — Singles with 2 players on one team (should 400)
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OpenPlay",
+  "gameType": "Singles",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    {
+      "teamCode": "A",
+      "teamName": "Player A",
+      "players": [
+        { "registeredUserId": null, "playerName": "Jessie", "isGuest": true },
+        { "registeredUserId": null, "playerName": "Extra", "isGuest": true }
+      ]
+    },
+    {
+      "teamCode": "B",
+      "teamName": "Player B",
+      "players": [
+        { "registeredUserId": null, "playerName": "Opponent", "isGuest": true }
+      ]
+    }
+  ]
+}
+
+### 11. Unauthorized — no token (should 401)
+POST {{baseUrl}}/scoring/matches
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OpenPlay",
+  "gameType": "Singles",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    {
+      "teamCode": "A",
+      "teamName": "Player A",
+      "players": [
+        { "registeredUserId": null, "playerName": "Jessie", "isGuest": true }
+      ]
+    },
+    {
+      "teamCode": "B",
+      "teamName": "Player B",
+      "players": [
+        { "registeredUserId": null, "playerName": "Opponent", "isGuest": true }
+      ]
+    }
+  ]
+}
+
+### 12. Case test — uppercase matchMode (should still work)
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OPEN_PLAY",
+  "gameType": "SINGLES",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    {
+      "teamCode": "A",
+      "teamName": "Player A",
+      "players": [
+        { "registeredUserId": null, "playerName": "Jessie", "isGuest": true }
+      ]
+    },
+    {
+      "teamCode": "B",
+      "teamName": "Player B",
+      "players": [
+        { "registeredUserId": null, "playerName": "Opponent", "isGuest": true }
+      ]
+    }
+  ]
+}

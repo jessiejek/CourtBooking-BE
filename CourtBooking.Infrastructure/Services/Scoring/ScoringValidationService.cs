@@ -15,10 +15,12 @@ public class ScoringValidationService : IScoringValidationService
         if (string.IsNullOrWhiteSpace(request.RuleSetCode))
             errors.Add("Rule set code is required.");
 
-        if (request.GameType != "Singles" && request.GameType != "Doubles")
+        if (!string.Equals(request.GameType, "Singles", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.GameType, "Doubles", StringComparison.OrdinalIgnoreCase))
             errors.Add("Game type must be 'Singles' or 'Doubles'.");
 
-        if (request.MatchMode != "OpenPlay" && request.MatchMode != "Booking")
+        if (!string.Equals(request.MatchMode, "OpenPlay", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.MatchMode, "Booking", StringComparison.OrdinalIgnoreCase))
             errors.Add("Match mode must be 'OpenPlay' or 'Booking'.");
 
         if (request.Teams.Count != 2)

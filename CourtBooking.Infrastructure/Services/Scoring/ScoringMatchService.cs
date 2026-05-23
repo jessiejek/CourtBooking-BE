@@ -52,8 +52,17 @@ public class ScoringMatchService : IScoringMatchService
             .FirstOrDefaultAsync(r => r.Code == request.RuleSetCode && r.IsActive)
             ?? throw new KeyNotFoundException($"Rule set '{request.RuleSetCode}' not found.");
 
+        // Normalize case for stored values
+        var normalizedMatchMode = string.Equals(request.MatchMode, "OpenPlay", StringComparison.OrdinalIgnoreCase)
+            ? "OpenPlay"
+            : "Booking";
+
+        var normalizedGameType = string.Equals(request.GameType, "Doubles", StringComparison.OrdinalIgnoreCase)
+            ? "Doubles"
+            : "Singles";
+
         // Determine initial scoring values based on game type
-        var isDoubles = request.GameType == "Doubles";
+        var isDoubles = normalizedGameType == "Doubles";
         var initialServerNumber = isDoubles ? 2 : (int?)null;
         var initialScoreCall = isDoubles ? "0-0-2" : "0-0";
 
@@ -65,8 +74,8 @@ public class ScoringMatchService : IScoringMatchService
             CreatedByUserId = userId,
             SportId = sport.Id,
             RuleSetId = ruleSet.Id,
-            MatchMode = request.MatchMode,
-            GameType = request.GameType,
+            MatchMode = normalizedMatchMode,
+            GameType = normalizedGameType,
             TargetScore = request.TargetScore,
             WinBy = request.WinBy,
             TeamAScore = 0,
@@ -75,7 +84,7 @@ public class ScoringMatchService : IScoringMatchService
             ServerNumber = initialServerNumber,
             ScoreCall = initialScoreCall,
             Status = "InProgress",
-            IsOpenPlay = request.MatchMode == "OpenPlay",
+            IsOpenPlay = normalizedMatchMode == "OpenPlay",
             StartedAt = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,
         };
