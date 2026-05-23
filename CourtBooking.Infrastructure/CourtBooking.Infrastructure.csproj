@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CourtBooking.Infrastructure</RootNamespace>
+    <AssemblyName>CourtBooking.Infrastructure</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="DotNetEnv" Version="2.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CourtBooking.Application\CourtBooking.Application.csproj" />
+  </ItemGroup>
+</Project>

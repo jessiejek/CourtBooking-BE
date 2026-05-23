@@ -1,0 +1,35 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.vs/
+*.sln.docstates
+*.nupkg
+*.pack
+TestResults/
+
+## .env (secrets)
+.env
+*.env.local
+*.env.*.local
+
+## IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Build
+packages/
+*.nupkg
+*.sqlite

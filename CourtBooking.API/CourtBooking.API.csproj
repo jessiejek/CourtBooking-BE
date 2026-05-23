@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>CourtBooking.API</RootNamespace>
+    <AssemblyName>CourtBooking.API</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.18" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="DotNetEnv" Version="2.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CourtBooking.Infrastructure\CourtBooking.Infrastructure.csproj" />
+    <ProjectReference Include="..\CourtBooking.Application\CourtBooking.Application.csproj" />
+    <ProjectReference Include="..\CourtBooking.Domain\CourtBooking.Domain.csproj" />
+  </ItemGroup>
+</Project>
