@@ -12,10 +12,14 @@ namespace CourtBooking.API.Controllers;
 public class ScoringMatchesController : ControllerBase
 {
     private readonly IScoringMatchService _scoringMatchService;
+    private readonly IScoringEngineService _scoringEngineService;
 
-    public ScoringMatchesController(IScoringMatchService scoringMatchService)
+    public ScoringMatchesController(
+        IScoringMatchService scoringMatchService,
+        IScoringEngineService scoringEngineService)
     {
         _scoringMatchService = scoringMatchService;
+        _scoringEngineService = scoringEngineService;
     }
 
     [HttpPost("matches")]
@@ -37,6 +41,98 @@ public class ScoringMatchesController : ControllerBase
         catch (ArgumentException ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("matches/{id:guid}/start")]
+    public async Task<IActionResult> StartMatch(Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        try
+        {
+            var match = await _scoringEngineService.StartMatchAsync(id, userId);
+            return Ok(match);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("matches/{id:guid}/rally")]
+    public async Task<IActionResult> ApplyRally(Guid id, [FromBody] RallyRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        try
+        {
+            var match = await _scoringEngineService.ApplyRallyAsync(id, request.WinningTeamCode, userId);
+            return Ok(match);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("matches/{id:guid}/undo")]
+    public async Task<IActionResult> UndoRally(Guid id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        try
+        {
+            var match = await _scoringEngineService.UndoLastRallyAsync(id, userId);
+            return Ok(match);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("matches/{id:guid}/end")]
+    public async Task<IActionResult> EndMatch(Guid id, [FromBody] EndMatchRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+            return Unauthorized();
+
+        try
+        {
+            var match = await _scoringEngineService.EndMatchAsync(id, request.Reason, userId);
+            return Ok(match);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {
@@ -74,4 +170,14 @@ public class ScoringMatchesController : ControllerBase
         var results = await _scoringMatchService.SearchPlayersAsync(query);
         return Ok(results);
     }
+}
+
+public class RallyRequest
+{
+    public string WinningTeamCode { get; set; } = string.Empty;
+}
+
+public class EndMatchRequest
+{
+    public string Reason { get; set; } = string.Empty;
 }

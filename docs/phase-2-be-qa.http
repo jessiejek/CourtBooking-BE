@@ -1,0 +1,165 @@
+### Phase 2-BE QA — Pickleball Rally Scoring Engine
+
+@baseUrl = http://localhost:5000/api
+@token = <PASTE_TOKEN_HERE>
+
+### 1. Login (get token)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@courtbooking.com",
+  "password": "***"
+}
+
+### 2. Create Singles match
+# @name createSingles
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OPEN_PLAY",
+  "gameType": "SINGLES",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    { "teamCode": "A", "teamName": "Player A", "players": [{ "registeredUserId": null, "playerName": "Jessie", "isGuest": true }] },
+    { "teamCode": "B", "teamName": "Player B", "players": [{ "registeredUserId": null, "playerName": "Opponent", "isGuest": true }] }
+  ]
+}
+
+### 3. Start Singles match (replace {id})
+POST {{baseUrl}}/scoring/matches/{id}/start
+Authorization: Bearer {{token}}
+
+### 4. Singles rally — A wins (0-0 → 1-0)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }
+
+### 5. Singles rally — B wins (side-out, 1-0 → 1-0, serving B)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "B" }
+
+### 6. Singles rally — B wins again (B scores: 0-1 → 1-1)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "B" }
+
+### 7. Singles undo last rally (should revert to 0-1, serving B)
+POST {{baseUrl}}/scoring/matches/{id}/undo
+Authorization: Bearer {{token}}
+
+### 8. Singles manual end
+POST {{baseUrl}}/scoring/matches/{id}/end
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "reason": "ManualEnd" }
+
+### ─── Doubles ───────────────────────────────
+
+### 9. Create Doubles match
+# @name createDoubles
+POST {{baseUrl}}/scoring/matches
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bookingId": null,
+  "sportCode": "PICKLEBALL",
+  "ruleSetCode": "PICKLEBALL_SIDE_OUT_11",
+  "matchMode": "OPEN_PLAY",
+  "gameType": "DOUBLES",
+  "targetScore": 11,
+  "winBy": 2,
+  "teams": [
+    { "teamCode": "A", "teamName": "Team A", "players": [
+      { "registeredUserId": null, "playerName": "Jessie", "isGuest": true },
+      { "registeredUserId": null, "playerName": "Partner", "isGuest": true }
+    ]},
+    { "teamCode": "B", "teamName": "Team B", "players": [
+      { "registeredUserId": null, "playerName": "Opponent 1", "isGuest": true },
+      { "registeredUserId": null, "playerName": "Opponent 2", "isGuest": true }
+    ]}
+  ]
+}
+
+### 10. Start Doubles match (replace {id})
+POST {{baseUrl}}/scoring/matches/{id}/start
+Authorization: Bearer {{token}}
+# Expects: 0-0-2
+
+### 11. Doubles — A wins rally (0-0-2 → 1-0-2)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }
+
+### 12. Doubles — B wins, server 2 (1-0-2 → 1-0-1, serving B)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "B" }
+
+### 13. Doubles — B wins rally (1-0-1 → 1-1-1)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "B" }
+
+### 14. Doubles — A wins rally (1-1-1 → 1-1-2, server switch)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }
+
+### 15. Doubles — A wins again (side-out: 1-1-2 → 1-1-1, serving A)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }
+
+### 16. Doubles — undo
+POST {{baseUrl}}/scoring/matches/{id}/undo
+Authorization: Bearer {{token}}
+# Should revert to 1-1-2 serving B
+
+### 17. Multiple undo
+POST {{baseUrl}}/scoring/matches/{id}/undo
+Authorization: Bearer {{token}}
+# Should revert to 1-1-1 serving B
+
+### 18. Undo on empty history (should 400)
+POST {{baseUrl}}/scoring/matches/{id}/undo
+Authorization: Bearer {{token}}
+# After undoing all — should return 400
+
+### 19. Rally on completed match (should 400)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }
+
+### 20. Unauthorized (no token → 401)
+POST {{baseUrl}}/scoring/matches/{id}/rally
+Content-Type: application/json
+
+{ "winningTeamCode": "A" }

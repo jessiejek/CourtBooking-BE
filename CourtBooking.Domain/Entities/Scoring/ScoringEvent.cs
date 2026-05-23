@@ -44,6 +44,9 @@ public class ScoringEvent
     [Required]
     public string CreatedByUserId { get; set; } = string.Empty;
 
+    public bool IsUndone { get; set; }
+    public DateTime? UndoneAt { get; set; }
+
     [ForeignKey(nameof(MatchId))]
     public ScoringMatch? Match { get; set; }
 }

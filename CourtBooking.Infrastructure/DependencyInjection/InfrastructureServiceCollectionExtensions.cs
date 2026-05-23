@@ -39,6 +39,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IScoringMatchService, ScoringMatchService>();
         services.AddScoped<IScoringValidationService, ScoringValidationService>();
+        services.AddScoped<IScoringEngineService, PickleballScoringEngine>();
 
         return services;
     }
